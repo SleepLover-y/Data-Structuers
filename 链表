@@ -1,0 +1,267 @@
+#include<cstddef>
+#include<cstdlib>
+#include<iostream>
+using namespace std;
+typedef int ElemType;
+//定义单链表
+typedef struct node {
+	ElemType date;
+	struct node* next;
+}Node;
+//单链表初始化
+Node* initlist() {
+	Node* head = (Node*)malloc(sizeof(Node));
+	head->date = 0;
+	head->next = NULL;
+	return head;
+}
+//头插法
+void insertHead(Node* l, ElemType e) {
+	Node* p = (Node*)malloc(sizeof(Node));
+	p->date = e;
+	p->next = l->next;
+	l->next = p;
+}
+//遍历
+void listNode(Node* l) {
+	Node* p = l->next;
+	while (p != NULL) {
+		cout << p->date;
+		p = p->next;
+	}
+	cout << endl;
+}
+//尾插法
+Node* get_tail(Node* l) {
+	Node* p = l;
+	while (p->next != NULL)
+	{
+		p = p->next;
+	}
+	return p;
+}
+Node* inserttail(Node* tail, ElemType e)
+{
+	Node* p = (Node*)malloc(sizeof(Node));
+	p->date = e;
+	tail->next = p;
+	p->next = NULL;
+	return p;
+}
+//指定位置插入元素
+int insertNode(Node* l, int pos, ElemType e) {
+	Node* p = l;
+	int i = 0;
+	while (i < pos - 1) {
+		p = p->next;
+		i++;
+		if (p == NULL)
+			return 0;
+	}
+	Node* q = (Node*)malloc(sizeof(Node));
+	q->date = e;
+	q->next = p->next;
+	p->next = q;
+	return 1;
+}
+//删除指定位置元素
+int deleteNode(Node* l, int pos) {
+	Node* p = l;
+	int i = 0;
+	while (i < pos - 1) {
+		p = p->next;
+		i++;
+		if (p == NULL)
+			return 0;
+	}
+	Node* q = p->next;
+	p->next = q->next;
+	free(q);
+	return 1;
+}
+//获取链表长度
+int listlen(Node* l) {
+	Node* p = l;
+	int len = 0;
+	while (p != NULL) {
+		len++;
+		p = p->next;
+	}
+	return len;
+}
+//释放链表
+void freelist(Node* l) {
+	Node* p = l->next;
+	Node* q;
+	while (p != NULL) {
+		q = p->next;
+		free(p);
+		p = q;
+	}
+	l->next = NULL;
+}
+//双指针找到倒数第K个节点
+int FindNodeFS(Node* l, int k) {
+	Node* fast = l->next;
+	Node* slow = l->next;
+	for (int i = 0; i < k; i++) {
+		fast = fast->next;
+	}
+	while (fast != NULL) {
+		fast = fast->next;
+		slow = slow->next;
+
+	}
+	cout << slow->date;
+	return 1;
+}
+//删除绝对值相同的节点
+void removeNode(Node* l, int n) {
+	Node* p = l;
+	int index;
+	int* q = (int*)malloc(sizeof(int) * (n + 1));
+	for (int i = 0; i < n + 1; i++) {
+		*(q + i) = 0;
+	}
+	while (p->next != NULL) {
+		index = abs(p->next->date);
+		if (*(q + index) == 0) {
+			*(q + index) = 1;
+			p = p->next;
+		}
+		else {
+			Node* temp = p->next;
+			p->next = temp->next;
+			free(temp);
+		}
+	}
+	free(q);
+}
+//反转列表
+Node* reverseList(Node* head) {
+	Node* first = NULL;
+	Node* second = head->next;
+	Node* third;
+	while (second != NULL) {
+		third = second->next;
+		second->next = first;
+		first = second;
+		second = third;
+	}
+	Node* hd = initlist();
+	hd->next = second;
+	return hd;
+}
+//(寻找)删除链表的中间节点
+int deleteMiddleNode(Node* head) {
+	Node* fast = head->next;
+	Node* slow = head;
+	while (fast != NULL && fast->next != NULL) {
+		fast = fast->next->next;
+		slow = slow->next;
+	}
+	Node* temp = slow->next;
+	slow->next = temp->next;
+	free(temp);
+	return 1;
+}
+//链表重新排序
+void reorderlist(Node* head) {
+	Node* fast = head->next;
+	Node* slow = head;
+	while (fast != NULL && fast->next != NULL) {
+		fast = fast->next->next;
+		slow = slow->next;
+	}
+	Node* first = NULL;
+	Node* second = slow->next;
+	Node* third = NULL;
+	slow->next = NULL;
+	while (second != NULL) {
+		third = second->next;
+		second->next = first;
+		first = second;
+		second = third;
+	}
+	Node* p1 = head->next;
+	Node* q1 = first;
+	Node* p2, * q2;
+	while (p1 != NULL && q1 != NULL) {
+		p2 = p1->next;
+		q2 = q1->next;
+		p1->next = q1;
+		q1->next = p2;
+		p1 = p2;
+		q1 = q2;
+	}
+	if (q1 != NULL) {
+		Node* tail = head;
+		while (tail->next != NULL) {
+			tail = tail->next;
+		}
+		tail->next = q1;
+	}
+}
+//判断是否有环
+int iscycle(Node* head) {
+	Node* fast = head;
+	Node* slow = head;
+	while (fast != NULL && fast->next != NULL) {
+		fast = fast->next->next;
+		slow = slow->next;
+		if (fast == slow)
+			return 1;
+	}
+	return 0;
+}
+//找寻环的入口
+Node* findbegin(Node* head) {
+	Node* fast = head;
+	Node* slow = head;
+	while (fast != NULL && fast->next != NULL) {
+		fast = fast->next->next;
+		slow = slow->next;
+		if (fast == slow) {
+			int count = 1;
+			Node* p = fast;
+			while (p->next != slow) {
+				p = p->next;
+				count++;
+			}
+			fast = head;
+			slow = head;
+			for (int i = 0; i < count; i++) {
+				fast = fast->next;
+			}
+			while (fast != slow) {
+				fast = fast->next;
+				slow = slow->next;
+			}
+			return fast;
+		}
+	}
+	return NULL;
+}
+
+int main() {
+	Node* list = initlist();
+	insertHead(list, 3);
+	insertHead(list, 2);
+	insertHead(list, 1);
+	Node* a = get_tail(list);
+	a = inserttail(a, 4);
+	a = inserttail(a, 5);
+	a = inserttail(a, 6);
+	a = inserttail(a, 7);
+	//listNode(list);
+	//insertNode(list, 2, 99);
+	//deleteNode(list, 2);
+	//freelist(list);
+	//FindNodeFS(list, 4);
+	//deleteMiddleNode(list);
+	//listNode(list);
+	reorderlist(list);
+	listNode(list);
+	iscycle(list);
+	return 0;
+}
