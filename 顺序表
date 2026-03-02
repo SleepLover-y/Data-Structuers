@@ -1,0 +1,101 @@
+#include<cstddef>
+#include<cstdlib>
+#include<iostream>
+using namespace std;
+constexpr int maxsize =100;
+typedef int elemtype;
+//顺序表的存储
+typedef struct {
+	elemtype date[maxsize];
+	int length;
+}seqlist;
+//初始化函数
+static void InitList(seqlist* l)
+{
+	l->length = 0;
+}
+//加入元素
+static int appendelem(seqlist* l, elemtype e)
+{
+	if (l->length >= maxsize) {
+		cout << "error" << endl;
+		return 0;
+	}
+	l->date[l->length] = e;
+	l->length++;
+	return 1;
+}
+//遍历
+static void listelem(seqlist* l) {
+	for (int i = 0; i < l->length; i++) {
+		cout << l->date[i] << " ";
+	}
+	cout << endl;
+}
+//插入元素
+static void insertelem(seqlist* l, int pos, elemtype e) {
+	if (pos <= l->length) {
+		for (int i = l->length - 1; i >= pos - 1; i--) {
+			l->date[i + 1] = l->date[i];
+		}
+		l->date[pos - 1] = e;
+		l->length++;
+	}
+}
+//删除元素
+static int deleteelem(seqlist* l, int pos, elemtype* e) {
+	*e = l->date[pos - 1];
+	if (pos < l->length) {
+		for (int i = pos - 1; i < l->length; i++) {
+			l->date[i] = l->date[i + 1];
+		}
+		l->length--;
+	}
+	return 1;
+}
+//寻找元素
+static int findelem(seqlist* l, elemtype e) {
+	for (int i = 0; i < l->length; i++) {
+		if (l->date[i] == e) {
+			return i + 1;
+		}
+	}
+	return 0;
+}
+//动态分配内存
+typedef struct {
+	elemtype* date;
+	int len;
+}sqlist;
+static sqlist* initlist1() {
+	sqlist* l = (sqlist*)malloc(sizeof(sqlist));
+	if (l == NULL) {
+		return NULL;
+	}
+	l->date = (elemtype*)malloc(sizeof(elemtype) * maxsize);
+	if (l->date == NULL) {
+		free(l);
+		return NULL;
+	}
+	l->len = 0;
+	return l;
+}
+
+int main()
+{
+	elemtype deldate;
+	seqlist list1;
+	InitList(&list1);
+	//cout<<list1.length<<endl;
+	appendelem(&list1, 0);
+	appendelem(&list1, 1);
+	appendelem(&list1, 2);
+	appendelem(&list1, 3);
+	appendelem(&list1, 4);
+	listelem(&list1);
+	insertelem(&list1, 2, 520);
+	listelem(&list1);
+	deleteelem(&list1, 3, &deldate);
+	listelem(&list1);
+	int a = findelem(&list1, 520);
+}
