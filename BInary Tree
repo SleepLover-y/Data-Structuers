@@ -3,7 +3,7 @@
 #include<cstddef>
 using namespace std;
 typedef char ElemType;
-//定义树
+//定义二叉树
 typedef struct TreeNode {
 	ElemType data;
 	struct TreeNode* lchild;
