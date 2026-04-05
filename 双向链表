@@ -1,0 +1,82 @@
+#include<iostream>
+#include<cstdlib>
+#include<cstddef>
+using namespace std;
+typedef int ElemType;
+//定义双向链表
+typedef struct node {
+	ElemType date;
+	struct node* prev, * next;
+}Node;
+//初始化链表
+Node* initlist() {
+	Node* head = (Node*)malloc(sizeof(Node));
+	head->date = 0;
+	head->prev = NULL;
+	head->next = NULL;
+	return head;
+}
+//头插法
+int insertHead(Node* l, ElemType e) {
+	Node* p = (Node*)malloc(sizeof(Node));
+	p->date = e;
+	p->prev = l;
+	p->next = l->next;
+	if (l->next != NULL) {
+		l->next->prev = p;
+	}
+	l->next = p;
+	return 1;
+}
+//寻找尾节点
+Node* get_tail(Node* l) {
+	Node* p = l->next;
+	while (p->next != NULL) {
+		p = p->next;
+	}
+	return p;
+}
+Node* inserttail(Node* tail, ElemType e) {
+	Node* p = (Node*)malloc(sizeof(Node));
+	p->date = e;
+	tail->next = p;
+	p->prev = tail;
+	p->next = NULL;
+	return p;
+}
+//遍历
+void listNode(Node* l) {
+	Node* p = l;
+	while (p->next != NULL) {
+		cout << p->next->date << " ";
+		p = p->next;
+	}
+}
+//指定位置插入节点
+void insertNode(Node* l, int pos, ElemType e) {
+	Node* p = l;
+	for (int i = 0; i < pos - 1; i++) {
+		if (p->next != NULL) {
+			p = p->next;
+		}
+	}
+	Node* q = (Node*)malloc(sizeof(Node));
+	q->date = e;
+	q->prev = p;
+	p->next->prev = q;
+	q->next = p->next;
+	p->next = q;
+}
+int main() {
+	Node* list = initlist();
+	insertHead(list, 30);
+	insertHead(list, 20);
+	insertHead(list, 10);
+	Node* tail = get_tail(list);
+	tail = inserttail(tail, 40);
+	tail = inserttail(tail, 50);
+	tail = inserttail(tail, 60);
+	insertNode(list, 4, 9);
+	listNode(list);
+	return 0;
+}
