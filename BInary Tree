@@ -1,0 +1,88 @@
+#include<iostream>
+#include<cstdlib>
+#include<cstddef>
+using namespace std;
+typedef char ElemType;
+//定义树
+typedef struct TreeNode {
+	ElemType data;
+	struct TreeNode* lchild;
+	struct TreeNode* rchild;
+}TreeNode;
+typedef TreeNode* BiTree;
+char str[] = "ABDH#K###E##CFI###G#J##";
+int idx = 0;
+//创建树
+static void CreateTree(BiTree* t) {
+	ElemType ch;
+	ch = str[idx++];
+	if (ch == '#') {
+		*t =NULL;
+	}
+	else {
+		*t = (BiTree)malloc(sizeof(TreeNode));
+		if (*t == NULL) {
+			cout << "false" << endl;
+			exit(1);
+		}
+		(*t)->data = ch;
+		CreateTree(&(*t)->lchild);
+		CreateTree(&(*t)->rchild);
+	}
+}
+//前序遍历
+static void PreOrder(TreeNode* t) {
+	if (t== NULL) {
+		return;
+	}
+	cout << t->data<<" ";
+	PreOrder(t->lchild);
+	PreOrder(t->rchild);
+}
+//中序遍历
+static void InOrder(TreeNode* t) {
+	if (t == NULL) {
+		return;
+	}
+	InOrder(t->lchild);
+	cout << t->data << " ";
+	InOrder(t->rchild);
+}
+//后序遍历
+static void postOrder(TreeNode* t) {
+	if (t == NULL) {
+		return;
+	}
+	postOrder(t->lchild);
+	postOrder(t->rchild);
+	cout << t->data << " ";
+}
+int main() {
+	TreeNode* t;
+	CreateTree(&t);
+	PreOrder(t);
+	cout << endl;
+	InOrder(t);
+	cout << '\n';
+	postOrder(t);
+	cout << '\n';
+	return 0;
+}
+static int isEmpty(Stack* s) {
+	if (top == 0) {
+		return 1;
+	}
+	return 0;
+}
+ 非递归前序遍历
+static void iterPreOreder(TreeNode* t) {
+	while (t != NULL || isEmpty(s) != 0) {
+		while (t != NULL) {
+			cout << t->data;
+			push(s, &t);
+			t = t->lchild;
+		}
+		pop(s, &t);
+		t = t->rchild;
+	}
+}
