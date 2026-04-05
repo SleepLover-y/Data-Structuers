@@ -1,0 +1,137 @@
+#include<iostream>
+#include<cstdlib>
+#include<cstddef>
+using namespace std;
+typedef char VertexType;
+typedef int EdgeType;
+constexpr int max1 = 0x7fffffff;
+constexpr int maxsize = 100;
+constexpr int maxedge = 200;
+typedef struct {
+	VertexType vertex[maxsize];
+	EdgeType arc[maxsize][maxsize];
+	int vertex_num;
+	int edge_num;
+}Mat_Graph;
+typedef struct {
+	int begin, end, weight;
+}Edge;
+static void create_graph(Mat_Graph* G) {
+	G->vertex_num = 9;
+	G->edge_num = 15;
+	G->vertex[0] = 'A';
+	G->vertex[1] = 'B';
+	G->vertex[2] = 'C';
+	G->vertex[3] = 'D';
+	G->vertex[4] = 'E';
+	G->vertex[5] = 'F';
+	G->vertex[6] = 'G';
+	G->vertex[7] = 'H';
+	G->vertex[8] = 'I';
+	for (int i = 0; i < G->vertex_num; i++) {
+		for (int j = 0; j < G->vertex_num; j++) {
+			if (i ==j)
+				G->arc[i][j] = 0;
+			else
+				G->arc[i][j] = max1;
+		}
+	}
+	//连线
+	G->arc[0][1] = 10;
+	G->arc[0][5] = 11;
+	G->arc[1][2] = 18;
+	G->arc[1][6] = 16;
+	G->arc[1][8] = 12;
+	G->arc[2][3] = 22;
+	G->arc[2][8] = 8;
+	G->arc[3][4] = 20;
+	G->arc[3][6] = 24;
+	G->arc[3][7] = 16;
+	G->arc[3][8] = 21;
+	G->arc[4][5] = 26;
+	G->arc[4][7] = 7;
+	G->arc[5][6] = 17;
+	G->arc[6][7] = 19;
+	for (int i = 0; i < G->vertex_num; i++) {
+		for (int j = 0; j < G->vertex_num; j++) {
+			G->arc[j][i] = G->arc[i][j];
+		}
+	}
+}
+// 冒泡排序函数：按权重从大到小排序
+static void bubbleSort(Edge* edges, int n) {
+	for (int i = 0; i < n - 1; i++) {
+		// 标记本轮是否有交换，优化排序
+		bool swapped = false;
+		for (int j = 0; j < n - 1 - i; j++) {
+			// 从大到小排序，所以用小于号
+			if (edges[j].weight > edges[j + 1].weight) {
+				// 交换元素
+				Edge temp = edges[j];
+				edges[j] = edges[j + 1];
+				edges[j + 1] = temp;
+				swapped = true;
+			}
+		}
+		// 如果没有交换，说明已经有序，提前退出
+		if (!swapped) break;
+	}
+}
+
+static int find(int* parent, int index) {
+
+	while (parent[index] > 0) {
+		index = parent[index];
+	}
+
+	return index;
+
+}
+
+
+static void KrusKal(Mat_Graph G) {
+	Edge edges[maxedge];
+	int k = 0;
+	for (int i = 0; i < G.vertex_num; i++) {
+
+		for (int j = i + 1; j < G.vertex_num; j++) {
+
+			if (G.arc[i][j] < max1) {
+				edges[k].begin = i;
+				edges[k].end = j;
+				edges[k].weight = G.arc[i][j];
+				k++;
+			}
+
+		}
+
+	}
+
+	bubbleSort(edges,G.edge_num);
+
+	int parent[maxsize];
+
+	for (int i = 0; i < G.vertex_num; i++) {
+		parent[i] = 0;
+	}
+	int n, m;
+	for (int i = 0; i < G.edge_num; i++) {
+		n = find(parent, edges[i].begin);
+		m = find(parent, edges[i].end);
+
+		if (n != m) {
+			parent[n] = m;
+			cout << '(' << G.vertex[edges[i].begin] << ',' << G.vertex[edges[i].end ]<< ')';
+		}
+	}
+
+}
+
+
+
+int main() {
+	Mat_Graph G;
+	create_graph(&G);
+	KrusKal(G);
+	return 0;
+}
