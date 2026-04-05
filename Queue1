@@ -1,0 +1,51 @@
+#include<iostream>
+#include<cstddef>
+#include<cstdlib>
+constexpr int maxsize = 100;
+using namespace std;
+typedef int ElemType;
+typedef struct {
+	ElemType *data;
+	int front;
+	int rear;
+}Queue;
+static void InitQueue(Queue* q) {
+	q->front = 0;
+	q->rear = 0;
+}
+static int QueueFull(Queue* q) {
+	if (q->front > 0) {
+		int chazhi = q->front;
+		for (int i = q->front; i <= q->rear; i++) {
+			q->data[i - chazhi] = q->data[i];
+		}
+		q->front = 0;
+		q->rear = q->front - chazhi;
+		return 0;
+	}
+	else
+		return 1;
+}
+static int equeue(Queue* q,ElemType e) {
+	if (q->rear>= maxsize) {
+        if (QueueFull(q)) {
+			return 0;
+		}
+	}
+	q->data[q->rear] = e;
+	q->rear++;
+	return 1;
+}
+static Queue* initqueue() {
+	Queue* s = (Queue*)malloc(sizeof(Queue));
+	if (s == NULL) {
+		return NULL;
+	}
+	s->data = (ElemType*)malloc(sizeof(ElemType)*maxsize);
+	s->front = 0;
+	s->rear = 0;
+ return s;
+}
+int main() {
+	return 0;
+}
