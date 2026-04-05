@@ -1,0 +1,48 @@
+#include<iostream>
+#include<cstdlib>
+#include<cstddef>
+using namespace std;
+constexpr int maxsize = 100;
+typedef int elemtype;
+typedef struct {
+	elemtype data[maxsize];
+	int top;
+}Stack;
+static void InitStack(Stack*s) {
+	s->top = -1;
+}
+static void PushStack(Stack*s,elemtype e) {
+	s->top++;
+	s->data[s->top] = e;
+}
+static void PopStack(Stack* s,elemtype* e) {
+	*e = s->data[s->top];
+	s->top--;
+}
+int main() {
+	Stack s;
+	InitStack(&s);
+	PushStack(&s, 2);
+	PushStack(&s, 3);
+	PushStack(&s, 5);
+	PushStack(&s, 7);
+	PushStack(&s, 11);
+	int val;
+	int* e = &val;
+	PopStack(&s, e);
+	cout << *e;
+	return 0;
+}
+ 
+ 
+ 
+typedef int ElemType;
+typedef struct {
+	ElemType * data;
+	int top;
+}Stack;
+static void InitStack() {
+	Stack* s = (Stack*)malloc(sizeof(Stack));
+	s->data = (ElemType*)malloc(sizeof(ElemType) * maxsize);
+	s->top = -1;
+}
