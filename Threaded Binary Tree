@@ -1,0 +1,106 @@
+#include<iostream>
+#include<cstdlib>
+#include<cstddef>
+using namespace std;
+typedef char ElemType;
+typedef struct ThreadNode {
+	ElemType data;
+	struct ThreadNode* lchild;
+	struct ThreadNode* rchild;
+	int ltag;
+	int rtag;
+}ThreadNode;
+typedef ThreadNode* ThreadTree;
+char str[] = "ABDH##I#EJ###CF##G##";
+int idx = 0;
+ThreadTree prev1;
+//创建树
+static void createTree(ThreadTree* t) {
+	ElemType ch;
+	ch = str[idx++];
+	if (ch == '#' || ch == '\0') {
+		*t = NULL;
+		return;
+	}
+	else {
+		*t = (ThreadNode*)malloc(sizeof(ThreadNode));
+		if (*t == NULL) {
+			exit(1);
+		}
+		(*t)->data = ch;
+		createTree(&(*t)->lchild);
+		if ((*t)->lchild != NULL) {
+			(*t) -> ltag = 0;
+		}
+		createTree(&(*t)->rchild);
+		if ((*t)->rchild != NULL) {
+			(*t)->rtag = 0;
+		}
+	}
+}
+// 具体线索化
+static void threading(ThreadTree t) {
+	if (t != NULL) {
+		threading(t->lchild);
+		if (t->lchild == NULL) {
+			t->ltag = 1;
+			t->lchild = prev1;
+		}
+		if (prev1 != NULL && prev1->rchild == NULL) {
+			prev1->rtag = 1;
+			prev1->rchild = t;
+		}
+		prev1 = t;
+		threading(t->rchild);
+	}
+}
+
+//开始线索化
+static void inOrderThreading(ThreadTree* head, ThreadTree t) {
+	*head = (ThreadNode*)malloc(sizeof(ThreadNode));
+	if (*head == NULL) {
+		exit(1);
+	}
+	(*head)->ltag = 0;
+	(*head)->rtag = 1;
+	(*head)->rchild = (*head);
+	if (t == NULL) {
+		(*head)->lchild = *head;
+	}
+	else {
+		(*head)->lchild = t;
+		prev1 = (*head);
+		threading(t);
+		if (prev1 == NULL) {
+			exit(1);
+		}
+		prev1->rchild = *head;
+		prev1->rtag = 1;
+		(*head)->rchild = prev1;
+	}
+}
+//使用线索中序遍历
+static void inOrder(ThreadNode* t) {
+	ThreadNode* curr;
+	curr = t->lchild;
+	while (curr != t) {
+		while (curr->ltag == 0) {
+			curr = curr->lchild;
+	    }
+		cout << curr->data;
+		while (curr->rtag == 1 && curr->rchild != t) {
+			curr = curr->rchild;
+			cout << curr->data;
+		}
+		curr = curr->rchild;
+	}
+	cout << endl;
+}
+	int main(){
+	ThreadTree head=NULL;
+	ThreadTree t=NULL;
+	createTree(&t);
+	inOrderThreading(&head, t);
+	inOrder(head);
+	return 0;
+}
