@@ -1,0 +1,50 @@
+#include<iostream>
+#include<cstdlib>
+#include<cstddef>
+using namespace std;
+typedef int ElemType;
+typedef struct stack {
+	ElemType data;
+	struct stack* next;
+}Stack;
+static Stack* InitStack() {
+	Stack* s = (Stack*)malloc(sizeof(Stack));
+	if (s == NULL) {
+		return NULL;
+	}
+	s->data = 0;
+	s->next = NULL;
+	return s;
+}
+static int Push(Stack* s, ElemType e) {
+	Stack* p = (Stack*)malloc(sizeof(Stack));
+	if (p == NULL) {
+		return 0;
+	}
+	p->data = e;
+	s->next = p;
+	p->next = NULL;
+}
+static int pop(Stack* s,ElemType* e) {
+	if (s->next == NULL) {
+		return 0;
+	}
+	*e = s->next->data;
+	Stack* p = s->next;
+	s->next = p->next;
+	free(p);
+	return 1;
+}
+int main() {
+	Stack* s = InitStack();
+	Push(s, 2);
+	Push(s, 3);
+	Push(s, 5);
+	Push(s, 7);
+	Push(s, 11);
+	int val = 0;
+	int* a = &val;
+	pop(s, a);
+	cout << *a;
+	return 0;
+}
