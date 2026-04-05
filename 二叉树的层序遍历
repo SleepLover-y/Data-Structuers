@@ -1,0 +1,54 @@
+#include<iostream>
+#include<cstdlib>
+#include<cstddef>
+using namespace std;
+typedef char TreeType;
+constexpr int maxsize = 100;
+typedef struct {
+	TreeType* data;
+	struct TreeNode* lchild;
+	struct TreeNode* rchild;
+}TreeNode;
+typedef TreeNode* Elemtype;
+typedef struct {
+	Elemtype* data;
+	int front;
+	int rear;
+}Queue;
+typedef TreeNode* BiTree;
+char str[] = "ABDH##I#EJ###CF##G##";
+int idx = 0;
+//获取队列元素个数
+int queueSize(Queue* q) {
+	if (!isEmpty(q)) {
+		return q->rear - q->front;
+	}
+	else {
+		return 0;
+	}
+}
+//获取最大层数
+int maxDepth(TreeNode* root) {
+	if (root == NULL) {
+		return 0;
+	}
+	int depth = 0;
+	Queue* q = initQueue();
+	equeue(q, root);
+	while (!isEmpty(q)) {
+		int count = queueSize(q);
+		while (count > 0) {
+			TreeNode* curr;
+			dequeue(q, &curr);
+			if (curr->lchild != NULL) {
+				equeue(q, curr->lchild);
+			}
+			if (curr->rchild != NULL) {
+				equeue(q, curr->rchild);
+			}
+			count--;
+		}
+		depth++;
+	}
+	return depth;
+}
