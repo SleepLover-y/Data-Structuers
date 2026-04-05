@@ -1,0 +1,65 @@
+#include<iostream>
+#include<cstddef>
+#include<cstdlib>
+using namespace std;
+typedef int elemtype;
+typedef struct QueueNode {
+	elemtype data;
+	struct QueueNode* next;
+}QueueNode;
+typedef struct {
+	QueueNode* front;
+	QueueNode* rear;
+}Queue;
+static Queue* initqueue() {
+	Queue* q = (Queue*)malloc(sizeof(Queue));
+	QueueNode* node = (QueueNode*)malloc(sizeof(QueueNode));
+	if (node == NULL) {
+		return NULL;
+	}
+	node->data = 0;
+	node->next = NULL;
+	if (q == NULL) {
+		return NULL;
+	}
+	q->front = node;
+	q->rear = node;
+	return q;
+}
+static int equeue(Queue* q, elemtype e) {
+	QueueNode* node = (QueueNode*)malloc(sizeof(QueueNode));
+	if (node == NULL) {
+		return NULL;	
+	}
+	node->data = e;
+	node->next = NULL;
+	q->rear->next = node;
+	q->rear = node;
+}
+static int dequeue(Queue* q, elemtype* e) {
+	QueueNode* node = (QueueNode*)malloc(sizeof(QueueNode));
+	node = q->front->next;
+	*e = node->data;
+	q->front->next = node->next;
+	if (q->rear == node) {
+		q->rear = q->front;
+		return 0;
+	}
+	free(node);
+	return 1;
+}
+int main() {
+	Queue* q;
+	q = initqueue();
+	equeue(q, 12);
+	equeue(q, 23);
+	equeue(q, 35);
+	equeue(q, 33);
+	equeue(q, 75);
+	elemtype e;
+	dequeue(q, &e);
+	cout << e << endl;
+	dequeue(q, &e);
+	cout << e << endl;
+	return 0;
+}
